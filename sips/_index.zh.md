@@ -2,7 +2,7 @@
 title: Starcoin 改进提案
 ---
 
-1. [./sip-1/]SIP Purpose and Guidelines
+1. [SIP Purpose and Guidelines](./sip-1/)
 1. 共识协议（Starcoin Consensus Protocol）
 1. 区块同步协议
 1. Move VM
