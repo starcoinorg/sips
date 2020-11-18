@@ -31,11 +31,13 @@ created: 2020-11-17
 ```rust
 pub struct BlockView {
     pub header: BlockHeaderView,
-    pub body: BlockBodyView,
-    pub uncles: Option<Vec<BlockHeaderView>>,
+    pub body: BlockTransactionsView,
+    pub uncles: Vec<BlockHeaderView>,
 }
 
 pub struct BlockHeaderView {
+    /// block hash
+    pub block_hash: HashValue,
     /// Parent hash.
     pub parent_hash: HashValue,
     /// Block timestamp.
@@ -63,7 +65,7 @@ pub struct BlockHeaderView {
     /// The chain id
     pub chain_id: u8,
 }
-pub enum BlockBodyView {
+pub enum BlockTransactionsView {
     Hashes(Vec<HashValue>),
     Full(Vec<SignedUserTransactionView>),
 }
@@ -75,9 +77,9 @@ pub enum BlockBodyView {
 
 ``` rust
 pub struct TransactionView {
-    block_id: HashValue,
+    block_hash: HashValue,
     block_number: BlockNumber,
-    hash: HashValue,
+    transaction_hash: HashValue,
     transaction_index: u64,
     block_metadata: Option<BlockMetadataView>,
     user_transaction: Option<SignedUserTransactionView>,
@@ -137,7 +139,7 @@ pub struct RawUserTransactionView {
 
 ``` rust
 pub struct TransactionInfoView {
-    block_id: HashValue,
+    block_hash: HashValue,
     block_number: BlockNumber,
     /// The hash of this transaction.
     transaction_hash: HashValue,
