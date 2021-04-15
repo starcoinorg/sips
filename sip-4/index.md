@@ -1,6 +1,6 @@
 ---
 sip: 3
-title: "[SIP4] Implement FeatureFlag by OnChain Governance"
+title: "[SIP4] SIP as feature flag"
 author: Starcoin Core Dev
 type: paper
 category: Core
@@ -9,6 +9,6 @@ created: 2021-11-01
 weight: 3
 ---
 
-# Implement FeatureFlag by OnChain Governance
+# SIP as feature flag
 
 TODO

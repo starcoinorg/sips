@@ -1,6 +1,6 @@
 ---
 sip: 3
-title: "[SIP4] 通过链上治理实现特性开关"
+title: "[SIP4] SIP 作为特性开关"
 author: Starcoin Core Dev
 type: paper
 category: Core
@@ -9,7 +9,7 @@ created: 2021-04-11
 weight: 4
 ---
 
-# 通过链上治理实现特性开关
+# SIP 作为特性开关
 
 ## 动机
 
@@ -23,38 +23,30 @@ weight: 4
 
 ## 技术方案
 
-定义一个链上的 FeatureFlag，并提供判断方法来检测开关是否打开。
+定义一个链上的 SIP module，并提供判断方法来检测该 Module 是否存在，如果存在则认为改 SIP 已经激活。对 Feature Flag 的投票按照 stdlib 升级流程即可。
 
 
-```rust
-module FeatureFlag{
-    
-    struct FeatureFlag has store{
-        sip: u64,
-        /// This feature's active time 
-        active_time: Option<u64>,    
-    }
+```move
+address 0x1{
+module SIP_2{
+}
 
-    
-    public fun is_active(account: address, sip: u64): bool {
-        // check the feature flag is active by onchain time.
-    }
+module SIP_2{
+}
 
 }
 ```
 
-在当前的 DAO 系统中新增一种 FeatureFlagProposal, 通过 DAO 投票来决定激活高度。
+
+在链的代码框架中提供简便的方法来根据链的状态判断某个 SIP 是否激活。
 
 ```rust
+trait StateReader {
 
-struct FeatureFlagProposal{
-    sip: u64, 
-    active_time: u64,
+    is_activated(sip: SIP): bool;
+
 }
-
 ```
-
-在链的代码框架中提供简便的方法来根据链的状态判断某个 FeatureFlag 是否激活。
 
 ## 升级流程
 
@@ -64,9 +56,9 @@ struct FeatureFlagProposal{
    * 实现的特性是否和 SIP 的目标相符。
    * 新的逻辑是否被特性开关控制，是否会影响旧的逻辑。
    * 是否满足技术性指标：比如性能，可维护性等。
-4. 合并之后，新的版本中就会携带改特性的逻辑，但出于未激活状态，矿工正常升级即可。
-5. 发起 FeatureFlagProposal, 呼吁社区进行投票，决定是否激活改特性， 以及激活的时间。
-6. 投票通过，等到链上时间到达激活时间，特性开关生效，全网启用新特性。
+4. 合并之后，新的版本中就会携带该特性的逻辑，但处于未激活状态，矿工正常升级即可。
+5. 发起一次 stdlib 升级提案，该 stdlib 的版本中定义新的 SIP 的 flag Module, 呼吁社区进行投票，决定是否激活改特性， 以及激活的时间。
+6. 投票通过，升级 stdlib， flag Module 写入链上，特性开关生效，全网启用新特性。
 7. 投票未通过，该特性将一直处于未激活状态，等待必要的时候清理。
 
 
