@@ -195,7 +195,7 @@ Equation for calculating the balance:
 
 
 ```rust
-STCBytes = STC  *  置换率 - 用户已经使用的 STCBytes 大小 
+STCBytes Balance = STC  *  Exchange Rate - STCBytes allocated to the user 
 ```
 
 The STCBytes utilizes the storage state corresponding to the completion of the most recent transaction. The user is allowed to overuse it once, so that the current transaction does not need to be considered when calculating STCBytes. Such a mechanism can encourage users to proactively release unused resources and reduce the use of STCBytes, which is beneficial to the healthy development of the system.
