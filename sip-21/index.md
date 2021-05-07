@@ -57,6 +57,8 @@ In the future, we plan to define additional Account Identifier versions to suppo
 
 ### Basic implementation in Rust
 
+Encoding:
+
 ``` rust
 let mut data = vec![];
 data.append(address.to_vec().as_mut());
@@ -68,5 +70,27 @@ let encoded = bech32::encode("st", data, bech32::Variant::Bech32).unwrap();
 println!(
     "address: {}, auth_key: {}, id: {}",
     address, auth_key, encoded
+);
+```
+
+Decoding:
+
+``` rust
+let data: Vec<u8> = {
+    let (hrp, data, variant) = bech32::decode(encoded.as_str()).unwrap();
+    assert_eq!(variant, bech32::Variant::Bech32);
+    assert_eq!(hrp.as_str(), "st");
+    assert_eq!(data.first().unwrap(), &bech32::u5::try_from_u8(1).unwrap());
+    bech32::FromBase32::from_base32(&data[1..]).unwrap()
+};
+
+assert_eq!(
+    data.len(),
+    AccountAddress::LENGTH + AuthenticationKey::LENGTH
+);
+assert_eq!(&data[0..AccountAddress::LENGTH], &address.to_u8());
+assert_eq!(
+    &data[AccountAddress::LENGTH..],
+    auth_key.to_vec().as_slice()
 );
 ```
