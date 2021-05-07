@@ -34,7 +34,7 @@ The Starcoin Account Identifier consists of
 4. A Bech32 encoded payload. For version 1, is Starcoin account address + auth key (16 + 32 bytes)
 5. The last 6 characters correspond to the Bech32 checksum
 
-The Diem Account Identifier shall not be mixed-cases. It shall be all uppercases, or all lowercases. For example, st1pu9w0v6vny0hnv2kvhzkh6fwvq5xut42wh8tukg3ra3vy7m6g2al5y4253sm4svf3npwqjevdcssyyse3v94v or ST1PU9W0V6VNY0HNV2KVHZKH6FWVQ5XUT42WH8TUKG3RA3VY7M6G2AL5Y4253SM4SVF3NPWQJEVDCSSYYSE3V94V are valid but st1PU9w0V6vny0HNV2KVHZKH6FWVQ5XUT42WH8TUKG3RA3VY7M6G2AL5Y4253SM4SVF3NPWQJEVDCSSYYSE3V94V is not.
+The Starcoin Account Identifier shall not be mixed-cases. It shall be all uppercases, or all lowercases. For example, st1pu9w0v6vny0hnv2kvhzkh6fwvq5xut42wh8tukg3ra3vy7m6g2al5y4253sm4svf3npwqjevdcssyyse3v94v or ST1PU9W0V6VNY0HNV2KVHZKH6FWVQ5XUT42WH8TUKG3RA3VY7M6G2AL5Y4253SM4SVF3NPWQJEVDCSSYYSE3V94V are valid but st1PU9w0V6vny0HNV2KVHZKH6FWVQ5XUT42WH8TUKG3RA3VY7M6G2AL5Y4253SM4SVF3NPWQJEVDCSSYYSE3V94V is not.
 
 Overall address format: prefix | delimiter | version | encoded payload | checksum
 
