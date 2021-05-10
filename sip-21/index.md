@@ -1,6 +1,6 @@
 ---
 sip: 21
-title: "[SIP21] Receipt Account"
+title: "[SIP21] Receipt Identifier"
 author: "@lerencao"
 type: SDK
 category: SDK
@@ -9,7 +9,7 @@ created: 2021-05-06
 weight: 21
 ---
 
-## Receipt Account
+## Receipt Identifier
 
 For communicating account identity of payee, we propose using a compact, versioned and case-insensitive identifier. To meet this criteria, we selected the Bech32 encoding implementation used in Bitcoin Segwit (BIP 0173) excluding the Segwit byte known-length restrictions.
 
@@ -21,7 +21,7 @@ For communicating account identity of payee, we propose using a compact, version
 
 ## Format
 
-The Starcoin Account Identifier consists of
+The Receipt Identifier consists of
 
 1. A prefix (also known as hrp (human readable part) which identifies the network version this address is intended for: “stc” for Starcoin Network.
 2. A Bech32 delimiter: The character “1” (one)
@@ -29,7 +29,7 @@ The Starcoin Account Identifier consists of
 4. A Bech32 encoded payload. For version 1, is Starcoin account address + optional auth key (16 + 32 bytes)
 5. The last 6 characters correspond to the Bech32 checksum
 
-The Account Identifier shall not be mixed-cases. It shall be all uppercases, or all lowercases. For example, st1pu9w0v6vny0hnv2kvhzkh6fwvq5xut42wh8tukg3ra3vy7m6g2al5y4253sm4svf3npwqjevdcssyyse3v94v or ST1PU9W0V6VNY0HNV2KVHZKH6FWVQ5XUT42WH8TUKG3RA3VY7M6G2AL5Y4253SM4SVF3NPWQJEVDCSSYYSE3V94V are valid but st1PU9w0V6vny0HNV2KVHZKH6FWVQ5XUT42WH8TUKG3RA3VY7M6G2AL5Y4253SM4SVF3NPWQJEVDCSSYYSE3V94V is not.
+The Receipt Identifier shall not be mixed-cases. It shall be all uppercases, or all lowercases. For example, st1pu9w0v6vny0hnv2kvhzkh6fwvq5xut42wh8tukg3ra3vy7m6g2al5y4253sm4svf3npwqjevdcssyyse3v94v or ST1PU9W0V6VNY0HNV2KVHZKH6FWVQ5XUT42WH8TUKG3RA3VY7M6G2AL5Y4253SM4SVF3NPWQJEVDCSSYYSE3V94V are valid but st1PU9w0V6vny0HNV2KVHZKH6FWVQ5XUT42WH8TUKG3RA3VY7M6G2AL5Y4253SM4SVF3NPWQJEVDCSSYYSE3V94V is not.
 
 Overall address format: prefix | delimiter | version | encoded payload | checksum
 
@@ -46,7 +46,7 @@ Result: stc1pzcpazr8gvjtx8e895at6s6qcxwfae3p4el9zmnem738fjj83765cue4p7xc3ff9c5dl
 
 ## Looking ahead
 
-In the future, we plan to define additional Account Identifier versions to support other forms of identity, such as more compact formats. These would leverage a similar overall structure but would have a different version identifier, preventing naming collisions.
+In the future, we plan to define additional Receipt Identifier versions to support other forms of identity, such as more compact formats. These would leverage a similar overall structure but would have a different version identifier, preventing naming collisions.
 
 
 ### Basic implementation in Rust
@@ -54,27 +54,27 @@ In the future, we plan to define additional Account Identifier versions to suppo
 
 ``` rust
     #[derive(Copy, Clone, Debug)]
-    pub enum PayeeIdentifier {
+    pub enum ReceiptIdentifier {
         V1(AccountAddress, Option<AuthenticationKey>),
     }
 
-    impl FromStr for PayeeIdentifier {
+    impl FromStr for ReceiptIdentifier {
         type Err = anyhow::Error;
 
         fn from_str(s: &str) -> Result<Self, Self::Err> {
             Self::decode(s)
         }
     }
-    impl std::fmt::Display for PayeeIdentifier {
+    impl std::fmt::Display for ReceiptIdentifier {
         fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
             write!(f, "{}", self.encode())
         }
     }
 
-    impl PayeeIdentifier {
+    impl ReceiptIdentifier {
         pub fn encode(&self) -> String {
             match self {
-                PayeeIdentifier::V1(address, auth_key) => {
+                ReceiptIdentifier::V1(address, auth_key) => {
                     let mut data = vec![];
                     data.append(address.to_vec().as_mut());
                     if let Some(auth_key) = auth_key {
@@ -87,7 +87,7 @@ In the future, we plan to define additional Account Identifier versions to suppo
                 }
             }
         }
-        pub fn decode(s: impl AsRef<str>) -> Result<PayeeIdentifier> {
+        pub fn decode(s: impl AsRef<str>) -> Result<ReceiptIdentifier> {
             let (hrp, data, variant) = bech32::decode(s.as_ref()).unwrap();
 
             anyhow::ensure!(variant == bech32::Variant::Bech32, "expect bech32 encoding");
@@ -107,7 +107,7 @@ In the future, we plan to define additional Account Identifier versions to suppo
             } else {
                 anyhow::bail!("invalid data");
             };
-            Ok(PayeeIdentifier::V1(address, auth_key))
+            Ok(ReceiptIdentifier::V1(address, auth_key))
         }
     }
     #[test]
@@ -115,15 +115,15 @@ In the future, we plan to define additional Account Identifier versions to suppo
         let address = AccountAddress::random();
         let auth_key = AuthenticationKey::random();
 
-        let encoded = PayeeIdentifier::V1(address, Some(auth_key)).to_string();
+        let encoded = ReceiptIdentifier::V1(address, Some(auth_key)).to_string();
         println!(
             "address: {}, auth_key: {}, id: {}",
             address, auth_key, &encoded
         );
 
-        let id = PayeeIdentifier::from_str(encoded.as_str()).unwrap();
+        let id = ReceiptIdentifier::from_str(encoded.as_str()).unwrap();
         match id {
-            PayeeIdentifier::V1(decoded_address, decoded_auth_key) => {
+            ReceiptIdentifier::V1(decoded_address, decoded_auth_key) => {
                 assert_eq!(decoded_address, address);
                 assert_eq!(decoded_auth_key, Some(auth_key));
             }
