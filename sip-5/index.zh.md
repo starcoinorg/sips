@@ -19,13 +19,11 @@ weight: 5
  
 ## 方案
 
-1. STC 总量恒定。
-2. 创世块中预挖一部分 n% 的 STC 作为国库的基础生态基金。
-3. 通过 PoW 分发的 Token，按时间线性在 Y 年内挖完。
-4. 每个块挖出的 STC，可根据出块时间计算得出，其中 t% 奖励给矿工，其他的注入国库。t% 这个比例可通过 DAO 治理调整。
-5. 挖完之后，矿工的奖励直接从国库提取，依然沿用原来的计算方式。如果国库中已经没有余额，则没有奖励。
-6. 未来链上的一些收益，比如短地址拍卖，可直接注入国库。
-7. 国库的资金支配通过 DAO 治理实现。
+1. STC 总量恒定，在创世块中一次性铸造出来锁到国库中，并销毁铸造能力。
+2. 国库中的的 STC 支取需要通过链上的治理机制进行决策。
+3. PoW 矿工奖励也从国库中提取，出块奖励的基础额度通过链上治理机进行调整。
+4. 如果 STC 国库没有余额，则出块无奖励。
+5. 链的生态k可以创造一些收益，并注入国库。
 
 
 ## 经济模型解释
@@ -39,25 +37,24 @@ weight: 5
 
 ## 技术方案
 
-定义一个链上的 Treasury, 这个 Treasury 是一个通用的模块，支持任意 Token，所以第三方 Token 也可以使用国库机制。 
+定义一个链上的 Treasury, 这个 Treasury 是一个通用的模块，支持任意 Token，所以第三方 Token 也可以使用国库机制。 只有 Token 但 issuer 可以创造 Treasury. 
 
 
 ```rust
 module Treasury{
     
-    struct Treasury<TokenType> has store,key{
-        token: Token<TokenType>,
-        mint_key: LinearTimeMintKey<TokenType>,
+    struct Treasury<TokenT> has store,key {
+        balance: Token<TokenT>,
+        /// event handle for treasury withdraw event
+        withdraw_events: Event::EventHandle<WithdrawEvent>,
+        /// event handle for treasury deposit event
+        deposit_events: Event::EventHandle<DepositEvent>,
     }
 
-    
-    public fun deposit<TokenType>(treasury_addr: address, token: Token<TokenType>) {
-        // deposit token to Treasury at treasury_addr
+     public fun deposit<TokenT:store>(token: Token<TokenT>) {
+        // deposit token to Treasury 
     }
 
-    public fun deposit_mint_key<TokenType>(treasury_addr: address, mint_key: LinearTimeMintKey<TokenType>) {
-        // deposit mint_key to Treasury at treasury_addr
-    }
 
 }
 ```
@@ -65,40 +62,40 @@ module Treasury{
 在当前的 DAO 系统中新增一种 TreasuryProposal, 通过 DAO 投票来决定国库资金的支配。
 
 ```rust
-
-struct TreasuryProposal{
-     /// the receiver of tokens.
-    receiver: address,
-    /// how many tokens to withdraw from treasury.
-    amount: u128,
-    /// time lock period, the token is time lokced.
-    period: Option<u64>
+module TreasuryWithdrawDaoProposal{
+     /// WithdrawToken request.
+    struct WithdrawToken has copy, drop, store {
+        /// the receiver of withdraw tokens.
+        receiver: address,
+        /// how many tokens to mint.
+        amount: u128,
+        /// How long in milliseconds does it take for the token to be released
+        period: u64,
+    }
 }
-
 ```
 
-调整区块奖励的计算方式：
+投票通过后，receiver 可以收到一个 LinearWithdrawCapability, 可以通过这个 capability 从 Treasury 中通过线性释放的方式提款。 
 
-原来的计算方式：
+```rust
+module Treasury{
+    
 
+    /// A linear time withdraw capability which can withdraw token from Treasury in a period by time-based linear release.
+    struct LinearWithdrawCapability<TokenT> has key, store {
+        /// The total amount of tokens that can be withdrawn by this capability
+        total: u128,
+        /// The amount of tokens that have been withdrawn by this capability
+        withdraw: u128,
+        /// The time-based linear release start time, timestamp in seconds.
+        start_time: u64,
+        ///  The time-based linear release period in seconds
+        period: u64
+    }
+
+     /// Withdraw tokens with given `LinearWithdrawCapability`.
+    public fun withdraw_with_linear_capability<TokenT: store>(cap: &mut LinearWithdrawCapability<TokenT>): Token<TokenT> {
+       
+    }
+}
 ```
-block_reward = base_block_reward * (block_time_target/base_block_time_target)
-```
-
-调整为
-
-```
-block_issue = (total_stc * percent_of_pow_issue)/y_year_in_millsecond  * block_time_target;
-
-block_reward = base_block_reward * (block_time_target/base_block_time_target)
-
-miner_reward = min(block_issue, block_reward);
-treasury_reward = block_issue - miner_reward; 
-```
-
-原来 ConsensusConfig 中的 base_block_reward 设置项，不再直接决定区块奖励，而是受到总的发行数量的限制。
-
-## 升级流程
-
-1. 按照 stdlib 的升级模式进行兼容性升级，total_stc 这个值静态定义在 module 代码中，不新增 OnChainConfig 选项，升级后区块奖励已经有变化。
-2. 将已经分配的生态基金 LinearTimeMintKey 转入到国库中。
