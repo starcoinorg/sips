@@ -99,3 +99,8 @@ module Treasury{
     }
 }
 ```
+
+## 升级方案
+
+1. Stdlib upgrade package 的 init_script 中需要初始化 Treasury 并销毁 genesis account 下的 MintCapability。
+2. 需要修改当前的区块奖励获取方式，不再通过铸币的方式进行区块奖励。
