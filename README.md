@@ -1,3 +1,6 @@
+---
+bookHidden: true
+---
 # SIPs
 Starcoin Improvement Proposals
 
