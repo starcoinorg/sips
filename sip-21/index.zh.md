@@ -11,4 +11,4 @@ weight: 21
 
 ## 收款识别码（Receipt Identifier）
 
-参看英文版本文档 [Receipt Identifier](./index.md)
+参看英文版本文档 [Receipt Identifier](/en/sips/sip-21/)
