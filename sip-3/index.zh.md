@@ -42,7 +42,7 @@ Starcoin 中的区块奖励遵循按时间线性释放的模式，每个区块�
 
 ```
 block_reward = base_block_reward/base_block_time_target * current_epoch.block_time_target
-``` 
+```
 
 初始化时， base_block_reward 为 10 STC，base_block_time_target 为 10 秒钟，也就是说 1 秒释放一个 STC。如果当前 Epoch 的目标出块时间是 15 秒，当前 Epoch 每个区块的奖励就是 15 STC。
 
@@ -55,6 +55,8 @@ uncle_reward = block_reward * base_reward_per_uncle_percent * uncle_count
 ```
 
 其中 base_reward_per_uncle_percent 为链上配置，初始化为 10%，可通过链上治理调整。uncle_count 是当前区块中包含的叔块头，最多 2 个。也就是说，如果某个区块中包含了 2 个叔块，可额外获得 20% 的奖励。
+
+![block reward](images/starcoin_block_reward.png)
 
 每个区块的奖励由创世账号从国库中提取出来，发送给出块的矿工，延迟 N 个块到帐，初始值是 7 个块。如果国库中余额为 0 ，则该区块没有区块奖励。
 
@@ -82,10 +84,10 @@ Starcoin 内置了一套 DAO 合约，创世交易中，创世账号会初始化
 
 ## 经济模型自举
 
+![block ecosystem](images/starcoin_ecosystem.png)
+
 当前的 PoW 公链，PoW 既是保证安全的一种共识机制，也是 Token 的分发策略。PoW 链的经济模型中，Token 先分发给矿工，然后再流转到其他生态。
 
 但这种模型对于 BTC 这样的以价值存储为目标的链来说，是可以形成生态闭环的，但对于智能合约链来说，Token 的价值依赖于链上的生态的繁荣，所以 Token 分发策略中应该向上层的生态应用倾斜，同时需要通过生态建设分发 Token，而不单纯通过矿工分发。
 
 从长远来看，链上的基础生态收益，最后归入到国库中，国库资金如果最后可以覆盖未来的研发投入以及矿工奖励，说明链的经济模型实现了自举。
-
-
