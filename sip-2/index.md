@@ -68,8 +68,7 @@ To this end, we introduce the concept of uncle block on the basis of orphan bloc
 
 We use the uncle block rate (i.e. uncle rate) in every epoch to evaluate the congestion of the network, and adjust the block generation time and block size according to the uncle block rate. to make full use of the network and increase throughput while avoiding over-large blocks or block generation time. Too short leads to too many orphan blocks and reduces safety.
 
-![starcoin_consensue](images/starcoin_consensue.png)
-
+<img src="./images/starcoin_consensue.png" alt="consensue" style="zoom:100%;" align=center />
 
 ### Dynamic Block Generation Time Adjustment
 
@@ -179,7 +178,7 @@ Through such a transformation, on the one hand, the security protection capabili
 
 We adopted the Jellyfish-Merkle tree in our design and extended it with branching functionality, so as to encapsulate it into a two-level state tree structure serving as the basic component of state storage. Jellyfish-Merkle tree follows a prefix tree structure. The state of the entire chain is maintained by a global tree, and each leaf node corresponds to the state of each user - AccountState. The path from the root node to any child node corresponds to an account address. The root hash value of the secondary Merkle tree is stored in AccountState, which corresponds to the Resource and Code of the user, as shown in the figure below:
 
-![state model](images/starcoin_state_model.png)
+<img src="./images/starcoin_state_model.png" alt="state model" style="zoom:100%;" align=center />
 
 The leaf node of the Code tree is the code of each contract Module, and the query path is the Module name. The leaf node of the Resource tree is the state in the contract, and the query path is the state type StructTag. In this way, the contract can be read through the `borrow_global<T>(address)` method or write the state through `move_to(address,resource)` method.
 
@@ -323,7 +322,7 @@ The success of the blockchain depends on its ability to evolve. This evolution w
 
 Starcoin takes "security" as one of its primary goals since day one of its design. We performed in-depth thinking from multiple perspectives including the infrastructure layer, the consensus layer, the protocol layer, the extension layer, and the application layer. Moreover, we carried out our design with in-depth insight from multiple dimensions including data logic, smart contracts, and operation permission. Last but not the least, we strive for comprehensive coverage and make every effort to ensure the security of the chain and digital assets.
 
-![security](images/starcoin_security.png)
+<img src="./images/starcoin_security.png" alt="security" style="zoom:100%;" align=center />
 
 ### Infrastructure Layer Security
 
@@ -336,8 +335,7 @@ In the overall design of Starcoin, we provide four data verification mechanisms:
 3. The Verifiable Blocks: the BlockHeader contains a hash of BlockBody, which is used to verify the data in BlockBody.
 4. The Verifiable Chain: the BlockHeader contains the root hash of a global block accumulator. Any block can provide a proof of the relationship with the current block. It is not necessary to traverse the block to verify whether a block is the ancestor of the current block (as shown in the picture below). 
 
-
-![block proof](images/starcoin_block_proof.png)
+<img src="./images/starcoin_block_proof.png" alt="block proof" style="zoom:100%;" align=center />
 
 The above is the cornerstone of Starcoin’s security. Among them, the "transaction accumulator" and the "block accumulator" constitute Starcoin's unique "dual accumulator" model, which provides a solid foundation for data security.
 

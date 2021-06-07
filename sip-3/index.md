@@ -56,7 +56,7 @@ uncle_reward = block_reward * base_reward_per_uncle_percent * uncle_count
 
 Among them, base_reward_per_uncle_percent is the on-chain configuration, which is initialized to 10% and can be adjusted through on-chain governance. uncle_count is the number of uncle headers included in the current block with a maximum value of 2. In other words, if a block contains 2 uncle blocks, you can get an additional 20% reward.
 
-![block reward](images/starcoin_block_reward.png)
+<img src="./images/starcoin_block_reward.png" alt="block reward" style="zoom:100%;" align=center />
 
 The reward of each block is extracted from the Treasury by the genesis account, and sent to the miner who offered the block, delayed by N blocks to the account, and the initial value is 7 blocks. If the balance in the Treasury is 0, there is no block reward for this block.
 
@@ -85,7 +85,7 @@ Treasury withdrawal rights are an STC distribution mechanism in addition to mine
    
 ## Economic Model Bootstrapping
 
-![block ecosystem](images/starcoin_ecosystem.png)
+<img src="./images/starcoin_ecosystem.png" alt="ecosystem" style="zoom:100%;" align=center />
 
 In the current PoW-based public chain, PoW is not only a security-wise consensus mechanism, but also a Token distribution strategy. In the economic model of the PoW chain, Tokens are firstly distributed to miners and then transferred to other ecosystems.
 
