@@ -56,7 +56,7 @@ uncle_reward = block_reward * base_reward_per_uncle_percent * uncle_count
 
 其中 base_reward_per_uncle_percent 为链上配置，初始化为 10%，可通过链上治理调整。uncle_count 是当前区块中包含的叔块头，最多 2 个。也就是说，如果某个区块中包含了 2 个叔块，可额外获得 20% 的奖励。
 
-![block reward](images/starcoin_block_reward.png)
+<img src="./images/starcoin_block_reward.png" alt="block reward" style="zoom:100%;" align=center />
 
 每个区块的奖励由创世账号从国库中提取出来，发送给出块的矿工，延迟 N 个块到帐，初始值是 7 个块。如果国库中余额为 0 ，则该区块没有区块奖励。
 
@@ -84,7 +84,7 @@ Starcoin 内置了一套 DAO 合约，创世交易中，创世账号会初始化
 
 ## 经济模型自举
 
-![block ecosystem](images/starcoin_ecosystem.png)
+<img src="./images/starcoin_ecosystem.png" alt="ecosystem" style="zoom:100%;" align=center />
 
 当前的 PoW 公链，PoW 既是保证安全的一种共识机制，也是 Token 的分发策略。PoW 链的经济模型中，Token 先分发给矿工，然后再流转到其他生态。
 

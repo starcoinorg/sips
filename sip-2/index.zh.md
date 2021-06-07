@@ -62,7 +62,7 @@ Starcoin 共识是一种比特币中本聪共识的增强版本。为了加快�
 
 我们用 Epoch 内的叔块率评估网络的拥塞情况，并以此作为出块时间，出块大小调整的依据，实现充分利用网络，提升吞吐的同时，也可避免区块过大或者出块时间太短导致孤块过多，安全降低。
 
-![starcoin_consensue](images/starcoin_consensue.png)
+<img src="./images/starcoin_consensue.png" alt="consensue" style="zoom:90%;" align=center />
 
 
 ### 动态出块时间调整
@@ -169,7 +169,7 @@ Starcoin 以太坊账户模型基础上做了以下改进：
 
 我们在 Diem 的 Jellyfish-Merkle 树的基础上，增加了可分叉功能作为状态存储的基础组件，封装成两级状态树结构。Jellyfish-Merkle 是一种前缀查询树结构。整个链的状态是一个全局树，叶子节点是每个用户的状态 AccountState，查询路径是账号地址；AccountState 里存的便是用户的 Resource 和 Code 的二级 Merkle 树的根哈希值。如下图所示：
 
-![state model](images/starcoin_state_model.png)
+<img src="./images/starcoin_state_model.png" alt="state model" style="zoom:100%;" align=center />
 
 Code 树的叶节点是每个合约 Module 的代码，查询路径是 Module 名称。Resource 树的叶节点是合约中的状态，查询路径是状态类型 StructTag。这样合约中即可通过 `borrow_global<T>(address)` 方法读取或者通过 `move_to(address,resource)` 写入状态。
 
@@ -303,7 +303,7 @@ Starcoin 的链上治理机制有几个重要的设计考量：
 
 Starcoin 从设计之初就把「安全」作为首要目标之一，从基础层、共识层、协议层、扩展层、应用层等多层面进行深入思考，从数据逻辑、智能合约、操作权等多维度进行深度设计，力争全方位覆盖，全力保障链和数字资产的安全。
 
-![security](images/starcoin_security.png)
+<img src="./images/starcoin_security.png" alt="security" style="zoom:100%;" align=center />
 
 ### 基础层安全
 
@@ -316,7 +316,7 @@ Starcoin 使用 Rust 语言开发，保障基础组件的内存安全与高效�
 3. 区块可校验：BlockHeader 包含一个 BlockBody 的哈希，用于校验 BlockBody 中的数据。
 4. 链可校验：BlockHeader 包含一个全局区块累加器的根哈希。任何一个区块可以提供一个和当前区块的关系证明，不需要遍历区块即可验证某个区块是否是当前区块的祖先区块。参考下图
 
-![block proof](images/starcoin_block_proof.png)
+<img src="./images/starcoin_block_proof.png" alt="block proof" style="zoom:100%;" align=center />
 
 以上是 Starcoin 安全性的基石。其中，「交易累加器」和「区块累积器」组成了 Starcoin 独特的「双累加器」模型，为数据安全提供坚实的基础。
 
