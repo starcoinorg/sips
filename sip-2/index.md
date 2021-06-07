@@ -68,7 +68,7 @@ To this end, we introduce the concept of uncle block on the basis of orphan bloc
 
 We use the uncle block rate (i.e. uncle rate) in every epoch to evaluate the congestion of the network, and adjust the block generation time and block size according to the uncle block rate. to make full use of the network and increase throughput while avoiding over-large blocks or block generation time. Too short leads to too many orphan blocks and reduces safety.
 
-<img src="./images/starcoin_consensue.png" alt="consensue" style="zoom:100%;" align=center />
+<img src="./images/starcoin_consensue.png" alt="consensue" style="zoom:90%;" align=center />
 
 ### Dynamic Block Generation Time Adjustment
 

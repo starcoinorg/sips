@@ -62,7 +62,7 @@ Starcoin 共识是一种比特币中本聪共识的增强版本。为了加快�
 
 我们用 Epoch 内的叔块率评估网络的拥塞情况，并以此作为出块时间，出块大小调整的依据，实现充分利用网络，提升吞吐的同时，也可避免区块过大或者出块时间太短导致孤块过多，安全降低。
 
-<img src="./images/starcoin_consensue.png" alt="consensue" style="zoom:100%;" align=center />
+<img src="./images/starcoin_consensue.png" alt="consensue" style="zoom:90%;" align=center />
 
 
 ### 动态出块时间调整
