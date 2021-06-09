@@ -11,4 +11,6 @@ weight: 5
 
 # Introduce Treasury
 
-TODO
+<!--more-->
+
+{{< todo >}}
