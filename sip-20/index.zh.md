@@ -2,7 +2,7 @@
 sip: 20
 title: "[SIP20] JSONRPC"
 author: "@lerencao"
-type: API
+sip_type: API
 category: API
 status: Alpha
 created: 2020-11-17

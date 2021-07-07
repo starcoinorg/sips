@@ -2,7 +2,7 @@
 sip: 3
 title: "[SIP4] SIP 作为特性开关"
 author: Starcoin Core Dev
-type: paper
+sip_type: paper
 category: Core
 status: Draft
 created: 2021-04-11

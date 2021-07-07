@@ -2,7 +2,7 @@
 sip: 3
 title: "[SIP4] Introduce Treasury"
 author: "@jolestar"
-type: paper
+sip_type: paper
 category: Core
 status: Beta
 created: 2021-4-13
