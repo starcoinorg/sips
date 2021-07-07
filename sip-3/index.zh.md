@@ -2,7 +2,7 @@
 sip: 3
 title: "[SIP3] 经济模型"
 author: Starcoin Foundation
-type: paper
+sip_type: paper
 category: Core
 status: Beta
 created: 2021-11-01

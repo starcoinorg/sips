@@ -2,7 +2,7 @@
 sip: 2
 title: "[SIP2] Technical paper"
 author: Starcoin Core Dev
-type: paper
+sip_type: paper
 category: Core
 status: Beta
 created: 2021-11-01
