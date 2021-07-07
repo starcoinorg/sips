@@ -2,7 +2,6 @@
 sip: 3
 title: "[SIP3] Token Economics"
 author: Starcoin Foundation
-type: paper
 category: Core
 status: Beta
 created: 2020-11-14

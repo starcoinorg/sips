@@ -2,7 +2,6 @@
 sip: 2
 title: "[SIP2] 技术白皮书"
 author: Starcoin Core Dev
-type: paper
 category: Core
 status: Beta
 created: 2021-11-01

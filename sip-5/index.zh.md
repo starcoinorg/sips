@@ -2,7 +2,6 @@
 sip: 3
 title: "[SIP4] 引入国库机制，让链的发展可持续"
 author: "@jolestar"
-type: paper
 category: Core
 status: Draft
 created: 2021-04-13
