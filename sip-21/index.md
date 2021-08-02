@@ -26,10 +26,10 @@ The Receipt Identifier consists of
 1. A prefix (also known as hrp (human readable part) which identifies the network version this address is intended for: “stc” for Starcoin Network.
 2. A Bech32 delimiter: The character “1” (one)
 3. A Bech32 version identifier: The character “p” (version = 1).
-4. A Bech32 encoded payload. For version 1, is Starcoin account address + optional auth key (16 + 32 bytes)
+4. A Bech32 encoded payload. For version 1, is Starcoin account address (16 bytes)
 5. The last 6 characters correspond to the Bech32 checksum
 
-The Receipt Identifier shall not be mixed-cases. It shall be all uppercases, or all lowercases. For example, st1pu9w0v6vny0hnv2kvhzkh6fwvq5xut42wh8tukg3ra3vy7m6g2al5y4253sm4svf3npwqjevdcssyyse3v94v or ST1PU9W0V6VNY0HNV2KVHZKH6FWVQ5XUT42WH8TUKG3RA3VY7M6G2AL5Y4253SM4SVF3NPWQJEVDCSSYYSE3V94V are valid but st1PU9w0V6vny0HNV2KVHZKH6FWVQ5XUT42WH8TUKG3RA3VY7M6G2AL5Y4253SM4SVF3NPWQJEVDCSSYYSE3V94V is not.
+The Receipt Identifier shall not be mixed-cases. It shall be all uppercases, or all lowercases. For example, stc1p8umxurxjd7kwgy058r3f7sgk8qgp509m or STC1P8UMXURXJD7KWGY058R3F7SGK8QGP509M are valid but stc1P8UMXURXJD7KWGY058R3F7SGK8QGP509M is not.
 
 Overall address format: prefix | delimiter | version | encoded payload | checksum
 
@@ -39,10 +39,9 @@ Prefix (string)
 Network: stc
 Address type (version prefix): 01 (letter p in Bech32 alphabet)
 Address payload (in hex)
-Address: 0x1603d10ce8649663e4e5a757a8681833
-AuthKey: 0x93dcc435cfca2dcf3bf44e9948f1f6a98e66a1f1b114a4b8a37ea16e12beeb6d
-Checksum: 3mmwta
-Result: stc1pzcpazr8gvjtx8e895at6s6qcxwfae3p4el9zmnem738fjj83765cue4p7xc3ff9c5dl2zmsjhm4k63mmwta
+Address: 0x3f366e0cd26face411f438e29f411638
+Checksum: gp509m
+Result: stc1p8umxurxjd7kwgy058r3f7sgk8qgp509m
 
 ## Looking ahead
 
@@ -53,42 +52,19 @@ In the future, we plan to define additional Receipt Identifier versions to suppo
 
 
 ``` rust
-    #[derive(Copy, Clone, Debug)]
-    pub enum ReceiptIdentifier {
-        V1(AccountAddress, Option<AuthenticationKey>),
-    }
+    impl AccountAddress {
 
-    impl FromStr for ReceiptIdentifier {
-        type Err = anyhow::Error;
-
-        fn from_str(s: &str) -> Result<Self, Self::Err> {
-            Self::decode(s)
+        pub fn to_bech32(&self) -> String {
+            let mut data = self.to_vec().to_base32();
+            data.insert(
+                0,
+                bech32::u5::try_from_u8(1).expect("1 to u8 should success"),
+            );
+            bech32::encode("stc", data, bech32::Variant::Bech32).expect("bech32 encode should success")
         }
-    }
-    impl std::fmt::Display for ReceiptIdentifier {
-        fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-            write!(f, "{}", self.encode())
-        }
-    }
 
-    impl ReceiptIdentifier {
-        pub fn encode(&self) -> String {
-            match self {
-                ReceiptIdentifier::V1(address, auth_key) => {
-                    let mut data = vec![];
-                    data.append(address.to_vec().as_mut());
-                    if let Some(auth_key) = auth_key {
-                        data.append(auth_key.to_vec().as_mut());
-                    }
-
-                    let mut data = data.to_base32();
-                    data.insert(0, bech32::u5::try_from_u8(1).unwrap());
-                    bech32::encode("stc", data, bech32::Variant::Bech32).unwrap()
-                }
-            }
-        }
-        pub fn decode(s: impl AsRef<str>) -> Result<ReceiptIdentifier> {
-            let (hrp, data, variant) = bech32::decode(s.as_ref()).unwrap();
+        fn parse_bench32(s: impl AsRef<str>) -> anyhow::Result<Vec<u8>> {
+            let (hrp, data, variant) = bech32::decode(s.as_ref())?;
 
             anyhow::ensure!(variant == bech32::Variant::Bech32, "expect bech32 encoding");
             anyhow::ensure!(hrp.as_str() == "stc", "expect bech32 hrp to be stc");
@@ -98,35 +74,38 @@ In the future, we plan to define additional Receipt Identifier versions to suppo
 
             let data: Vec<u8> = bech32::FromBase32::from_base32(&data[1..])?;
 
-            let (address, auth_key) = if data.len() == AccountAddress::LENGTH {
-                (AccountAddress::from_bytes(data.as_slice())?, None)
-            } else if data.len() == AccountAddress::LENGTH + AuthenticationKey::LENGTH {
-                let address = AccountAddress::from_bytes(&data[0..AccountAddress::LENGTH])?;
-                let auth_key = AuthenticationKey::try_from(&data[AccountAddress::LENGTH..])?;
-                (address, Some(auth_key))
+            if data.len() == AccountAddress::LENGTH {
+                Ok(data)
+            } else if data.len() == AccountAddress::LENGTH + 32 {
+                // for address + auth key format, just ignore auth key
+                Ok(data[0..AccountAddress::LENGTH].to_vec())
             } else {
-                anyhow::bail!("invalid data");
-            };
-            Ok(ReceiptIdentifier::V1(address, auth_key))
-        }
-    }
-    #[test]
-    pub fn test_rust_bench32() {
-        let address = AccountAddress::random();
-        let auth_key = AuthenticationKey::random();
-
-        let encoded = ReceiptIdentifier::V1(address, Some(auth_key)).to_string();
-        println!(
-            "address: {}, auth_key: {}, id: {}",
-            address, auth_key, &encoded
-        );
-
-        let id = ReceiptIdentifier::from_str(encoded.as_str()).unwrap();
-        match id {
-            ReceiptIdentifier::V1(decoded_address, decoded_auth_key) => {
-                assert_eq!(decoded_address, address);
-                assert_eq!(decoded_auth_key, Some(auth_key));
+                anyhow::bail!("Invalid address's length");
             }
         }
-    }    
+
+        //This method should not be part of the move core type, but can not implement from_str in starcoin project.
+        //May be the AccountAddress should not be move core type, move only take care of AddressBytes.
+        pub fn from_bech32(s: impl AsRef<str>) -> Result<Self, AccountAddressParseError> {
+            Self::from_bytes(Self::parse_bench32(s).map_err(|_| AccountAddressParseError)?)
+        }
+    }
+
+    #[test]
+    fn test_bech32() {
+        let hex = "0xca843279e3427144cead5e4d5999a3d0";
+        let json_hex = "\"0xca843279e3427144cead5e4d5999a3d0\"";
+        let bech32 = "stc1pe2zry70rgfc5fn4dtex4nxdr6qyyuevr";
+        let json_bech32 = "\"stc1pe2zry70rgfc5fn4dtex4nxdr6qyyuevr\"";
+
+        let address = AccountAddress::from_str(hex).unwrap();
+        let bech32_address = AccountAddress::from_str(bech32).unwrap();
+        let json_address: AccountAddress = serde_json::from_str(json_hex).unwrap();
+        let json_bech32_address: AccountAddress = serde_json::from_str(json_bech32).unwrap();
+
+        assert_eq!(address, bech32_address);
+        assert_eq!(address, json_address);
+        assert_eq!(address, json_bech32_address);
+    }
+  
 ```
