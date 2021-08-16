@@ -225,7 +225,7 @@ struct L2Card has store {
  }
 ```
 
-更详细的例子参看 [nft_card.move]([starcoin/nft_card.move at master · starcoinorg/starcoin (github.com)](https://github.com/starcoinorg/starcoin/blob/master/vm/functional-tests/tests/testsuite/nft/nft_card.move))
+更详细的例子参看 [nft_card.move](https://github.com/starcoinorg/starcoin/blob/master/vm/functional-tests/tests/testsuite/nft/nft_card.move)
 
 ### NFT 作为会员身份
 
