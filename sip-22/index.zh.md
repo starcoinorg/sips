@@ -63,7 +63,7 @@ struct Metadata has copy, store, drop {
 }
 ```
 
-Metadata 定义了 NFT 展示所需要的基本信息，名称，图片，描述。如果有其他需要扩展的信息，可以定义在 type_meta 中。图片有两个字段表达，`image` 表示图片地址，`image_data` 可以直接保存图片的二进制信息，客户端展示的时候，使用 `image` 和 `image_data` 中不为空的那个字段。
+Metadata 定义了 NFT 展示所需要的基本信息，名称，图片，描述。如果有其他需要扩展的信息，可以定义在 type_meta 中。图片有两个字段表达，`image` 表示图片地址，`image_data` 可以直接保存图片的二进制数据，客户端展示的时候，使用 `image` 和 `image_data` 中不为空的那个字段。
 
 另外，有的 NFT 的所有实例会使用同一个图片，这种情况下，NFT metadata 中的 `image` 和 `image_data` 可以都为空，客户端展示的时候使用 NFTTypeInfo 中的 metadata。
 
@@ -244,7 +244,7 @@ struct XMembershipBody has store{
 用户缴会员费成为会员后，会员费是锁在 NFT 中的，只有用户每次进行会员操作或者退出的时候，会检查会员是否到期并按时间流扣除会员费。更详细的例子参看 [identifier_nft.move](https://github.com/starcoinorg/starcoin/blob/master/vm/functional-tests/tests/testsuite/nft/identifier_nft.move)
 
 ### NFT 作为购物凭证
-用户直接通过支付 Token 在链上自行铸造 NFT，然后用 NFT 来兑换实物，在兑换之前，用户之间可以交易 NFT。更详细的例子参看 [nft_boxminer.move](https://github.com/starcoinorg/starcoin/blob/master/vm/functional-tests/tests/testsuite/nft/nft_boxminer.move)
+用户直接通过支付 Token 在链上自行铸造 NFT，然后用 NFT 来兑换实物。用户之间可以交易 NFT。更详细的例子参看 [nft_boxminer.move](https://github.com/starcoinorg/starcoin/blob/master/vm/functional-tests/tests/testsuite/nft/nft_boxminer.move)
 
 ### 通过 MerkleTree 证明来分发 NFT
 
