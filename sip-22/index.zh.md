@@ -217,7 +217,7 @@ public fun revoke<NFTMeta: copy + store + drop, NFTBody: store>(_cap: &mut BurnC
 用 Move 中的 NFT 来定义游戏道具的一个优势是可以在同一个 Module 中定义多个 NFT 类型，还可以实现道具间的组合，比如：
 
 ```rust
-/// 玩家通过两个 L2 的 Card 合成一个新的 L3 的 Card   
+/// 玩家通过两个 L1 的 Card 合成一个新的 L2 的 Card   
 struct L1Card has store {}
 struct L2Card has store {
      first: L1Card,

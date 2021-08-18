@@ -217,7 +217,7 @@ In the above scenario, the NFTMeta definition and the registered developer can p
 One advantage of using the NFT in Move to define game props is that you can define multiple NFT types in the same Module, and you can also define the combination of props, such as: 
 
 ```rust
-/// The player combines two L2 cards into a new L3 card   
+/// The player combines two L1 cards into a new L2 card   
 struct L1Card has store {}
 struct L2Card has store {
      first: L1Card,
