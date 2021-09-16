@@ -70,15 +70,17 @@ In addition, some type of NFT will use the same image for all instance, in this 
 
 ```rust
  /// The info of NFT type
-struct NFTTypeInfo<NFTMeta: copy + store + drop, NFTTypeInfoExt: copy + store + drop> has key, store {
+struct NFTTypeInfoV2<NFTMeta: copy + store + drop> has key, store {
         counter: u64,
         meta: Metadata,
-        info: NFTTypeInfoExt,
         mint_events: Event::EventHandle<MintEvent<NFTMeta>>,
+        burn_events: Event::EventHandle<BurnEvent<NFTMeta>>,
 }
 ```
 
-NFTTypeInfo is used to maintain a counter for the NFT id, as well as the global metata of the NFT type, each NFT type needs to be registered in the registry first.
+NFTTypeInfoV2 is used to maintain a counter for the NFT id, as well as the global metata of the NFT type, each NFT type needs to be registered in the registry first. All NFT type is in the 0x1 account resources.
+
+>Note: NFTTypeInfo is upgrade NFTTypeInfoV2 in the stdlibv7
 
 ## Method Definition
 
