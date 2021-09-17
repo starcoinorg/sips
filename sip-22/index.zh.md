@@ -65,19 +65,21 @@ struct Metadata has copy, store, drop {
 
 Metadata 定义了 NFT 展示所需要的基本信息，名称，图片，描述。如果有其他需要扩展的信息，可以定义在 type_meta 中。图片有两个字段表达，`image` 表示图片地址，`image_data` 可以直接保存图片的二进制数据，客户端展示的时候，使用 `image` 和 `image_data` 中不为空的那个字段。
 
-另外，有的 NFT 的所有实例会使用同一个图片，这种情况下，NFT metadata 中的 `image` 和 `image_data` 可以都为空，客户端展示的时候使用 NFTTypeInfo 中的 metadata。
+另外，有的 NFT 的所有实例会使用同一个图片，这种情况下，NFT metadata 中的 `image` 和 `image_data` 可以都为空，客户端展示的时候使用 NFTTypeInfoV2 中的 metadata。
 
 ```rust
  /// The info of NFT type
-struct NFTTypeInfo<NFTMeta: copy + store + drop, NFTTypeInfoExt: copy + store + drop> has key, store {
+struct NFTTypeInfoV2<NFTMeta: copy + store + drop> has key, store {
         counter: u64,
         meta: Metadata,
-        info: NFTTypeInfoExt,
         mint_events: Event::EventHandle<MintEvent<NFTMeta>>,
+        burn_events: Event::EventHandle<BurnEvent<NFTMeta>>,
 }
 ```
 
-NFTTypeInfo 用于维护 NFT id 的计数器，以及该 NFT 类型的全局 metata，每一种 NFT 类型需要先在注册中心注册。
+NFTTypeInfoV2 用于维护 NFT id 的计数器，以及该 NFT 类型的全局 metata，每一种 NFT 类型需要先在注册中心注册。所有的 NFT 类型都注册在 0x1 这个账号下。
+
+>注: NFTTypeInfo 在 stdlibv7 中变为 NFTTypeInfoV2
 
 ## 方法定义
 
