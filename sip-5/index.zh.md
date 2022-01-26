@@ -1,6 +1,6 @@
 ---
-sip: 3
-title: "[SIP4] 引入国库机制，让链的发展可持续"
+sip: 5
+title: "[SIP5] 引入国库机制，让链的发展可持续"
 author: "@jolestar"
 sip_type: paper
 category: Core
