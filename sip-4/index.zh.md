@@ -1,5 +1,5 @@
 ---
-sip: 3
+sip: 4
 title: "[SIP4] SIP 作为特性开关"
 author: Starcoin Core Dev
 sip_type: paper

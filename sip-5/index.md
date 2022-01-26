@@ -1,6 +1,6 @@
 ---
-sip: 3
-title: "[SIP4] Introduce Treasury"
+sip: 5
+title: "[SIP5] Introduce Treasury"
 author: "@jolestar"
 sip_type: paper
 category: Core
