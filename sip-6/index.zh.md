@@ -67,18 +67,18 @@ Y 要执行 T 的时候，依赖当前状态 σ𝑡，但 Y 并不会读取所�
 数据结构表达如下：
 
 ```rust
-pub struct ReadSet{
+pub struct ReadSet {
   state:Vec<(AccessPath,Vec<u8>)>,
 }
-pub struct ReadSetProof{
+pub struct ReadSetProof {
   //TODO define proof
 }
 
-pub struct StateFullTransaction{
+pub struct StateFullTransaction {
   read_set: ReadSet,
   proof: ReadSetProof,
   transaction: SignedUserTransaction,
-  //Transaction info is transaction execute result, include new state_root, event_root, etc.
+  // Transaction info is transaction execute result, include new state_root, event_root, etc.
   transaction_info: TransactionInfo,
 }
 
@@ -87,20 +87,20 @@ pub struct StateFullTransaction{
 富状态交易包含了交易执行依赖的状态，是可以自校验的，校验方法的伪代码表达如下：
 
 ```rust
-StateLessVM{
+StateLessVM {
   
-  fn eval(txn: StateFullTransaction, prev_state_root: HashValue): bool{
-    //通过 ReadSet 构造状态树
+  fn eval(txn: StateFullTransaction, prev_state_root: HashValue): bool {
+    // 通过 ReadSet 构造状态树
     let state_tree = build_state_tree(txn.read_set);
-    //验证 state_tree 的 root 和 prev_state_root 一致 
+    // 验证 state_tree 的 root 和 prev_state_root 一致 
     assert(state_tree.root == prev_state_root);
-    //在状态树的基础上执行交易
+    // 在状态树的基础上执行交易
     let output = execute_txn(&state_tree, txn.transaction);
-    //将执行结果中的 WriteSet 写入 state_tree
+    // 将执行结果中的 WriteSet 写入 state_tree
     state_tree.apply(output.write_set);
-    //验证执行后的结果和 StateFullTransaction 的 transaction info 匹配
+    // 验证执行后的结果和 StateFullTransaction 的 transaction info 匹配
     assert(state_tree.root == txn.transaction_info.state_root);
-    //验证 transaction_info 中的其他字段
+    // 验证 transaction_info 中的其他字段
   }
 }
 ```
@@ -117,7 +117,7 @@ StateLessVM{
 
 1. 如果 Layer2 合约依赖的 Layer1 的合约是无状态的，不需要读取状态（比如纯算法的合约），则和 Layer1 合约和 Layer1 合约之间的依赖一样。
 2. 如果 Layer2 合约依赖的 Layer1 的合约获取了只读状态(使用 borrow_global 指令)，则通过远程状态加载器从 Layer1 获取状态。不过读取的状态不是 Layer1 的最新状态，而是该 Layer2 交易关联的 Layer1 高度的历史状态。
-3. 如果 Layer2 合约依赖的 Layer1 的合约获取了可修改状态(使用 borrow_global_mut/move_from/move_to 指令)，则表明这个交易是一个跨层的交易，需要到 Layer1 执行跨层的状态迁移交易。这部分是否可以做成对开发者完全透明，需要进一步技术调研。当前先通过一种显示的方式进行状态迁移。
+3. 如果 Layer2 合约依赖的 Layer1 的合约获取了可修改状态(使用 borrow_global_mut/move_from/move_to 指令)，则表明这个交易是一个跨层的交易，需要到 Layer1 执行跨层的状态迁移交易。这部分是否可以做成对开发者完全透明，需要进一步技术调研。当前先通过一种显式的方式进行状态迁移。
 
 这样，就可以提供一种近乎于无缝的跨层的编程体验。
 
@@ -138,7 +138,7 @@ StateLessVM{
 示例代码如下：
 
 ```rust
-module CrossLayer{
+module CrossLayer {
    // Move state `s` to layer2 with the `id`, only can call on layer1 
    public native move_to_layer2<S>(signer: &signer, id: Layer2ID, s: S)；
    // Move state `S` from layer2 with the `id`, only can call on layer1 
@@ -149,16 +149,16 @@ module CrossLayer{
    public native move_from_layer1<S>(signer: &signer):S;
 }
 
-//transaction on layer1
+// transaction on layer1
 public(script) script_on_layer1(signer: Signer){
   let s = MyModule::get_state_from_somewhere(&signer);
   CrossLayer::move_to_layer2(&siger, dappx_layer2, s);
 }
 
-//transaction on dappx layer2
+// transaction on dappx layer2
 public(script) script_on_layer2(signer: Signer){
   let s = CrossLayer::move_from_layer1<S>(&siger);
-  //do something with s.
+  // do something with s.
   LocalModule::save_to_layer2(&signer,s);
 }
 ```
