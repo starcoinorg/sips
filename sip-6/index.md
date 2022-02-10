@@ -23,7 +23,7 @@ Regarding the issue of scaling, there are three main approaches in the current b
 1. Scaling by improving the consensus mechanism, or by reducing the number of validation nodes, etc.
 2. Scaling through sharding or parallel chains.
 3. Scaling through layering.
- 
+
 
 Starcoin has chosen the third approach for the following reasons:
 
@@ -276,3 +276,5 @@ The Stargate roadmap has the following key milestones:
 ### Glossary of Terms
 
 1. Free state: In Move, if an instance of a type can be held by other Modules, the state is regarded as free.
+
+> Note: This document is still being updated and improved, and is not the final version.
