@@ -48,7 +48,7 @@ NFT 是 Move 中的一种类型，它支持 store ability，但不可 copy 以�
 4. type_meta: 开发者自定义的 metadata，同时用来标记 NFT 的类型。Metadata 不是资源，它表达信息，所以支持 copy + store + drop。
 5. body: NFT 包含的资源，可以用来嵌入其他的资源。
 
-如果把 NFT 识为一个箱子，NFT 本身定义了这个箱子的归属，唯一编号，以及展示方式，而 NFTBody 就是箱子中封装的珠宝。展示方式通过 Metadata 来定义。
+如果把 NFT 视为一个箱子，NFT 本身定义了这个箱子的归属，唯一编号，以及展示方式，而 NFTBody 就是箱子中封装的珠宝。展示方式通过 Metadata 来定义。
 
 ```rust
 struct Metadata has copy, store, drop {
@@ -130,7 +130,7 @@ public fun deposit<NFTMeta: copy + store + drop, NFTBody: store>(sender: &signer
 /// 将 `nft` 存放到 `receiver` 的 NFTGallery
 public fun deposit_to<NFTMeta: copy + store + drop, NFTBody: store>(receiver: address, nft: NFT<NFTMeta, NFTBody>)
 
-/// 从 `sender` 的 NFTGallery 中取一个类型为 NFTMeta NFT
+/// 从 `sender` 的 NFTGallery 中取一个类型为 NFTMeta 的 NFT
 public fun withdraw_one<NFTMeta: copy + store + drop, NFTBody: store>(sender: &signer): NFT<NFTMeta, NFTBody>
 
 /// 从 `sender` 的 NFTGallery 中取一个类型为 NFTMeta，id 为参数 `id` 的 NFT
