@@ -17,3 +17,4 @@ Starcoin Improvement Proposals
 21. [Receipt Identifier](./sip-21)
 22. [NFT](./sip-22/)
 23. [Oracle](./sip-23/)
+24. [DAG-based Execution for Consistent Account States](./sip-201/)

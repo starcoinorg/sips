@@ -1,0 +1,65 @@
+* SIP-201: DAG-based Execution for Consistent Account States
+** Abstract
+This proposal introduces a DAG-based execution model for Starcoin to address 
+concurrency conflicts that arise when applying a DAG structure to its account-based, 
+Move-VM-enabled PoW blockchain. By leveraging sequence numbers, topological 
+sorting, and conflict filtering,The model maintains execution consistency by limiting
+parallelism within accounts, while enabling concurrency across unrelated transactions.
+
+** Motivation
+Starcoin adopts an account-based execution model with a Move VM on top of a PoW 
+consensus. Introducing a DAG structure improves block-level concurrency, but exposes 
+conflicts during transaction execution due to shared account state and sequential 
+semantics in the VM. Unlike UTXO-based systems where parallelism is natural, account 
+models require additional constraints to preserve consistency. This proposal aims to 
+resolve these execution-layer conflicts in a minimal and practical way.
+
+It changes the meaning of "transactions in a block" from a linear list to a
+DAG-resolved execution view, reflecting dependencies across multiple blocks.
+
+** Proposal
+
+1. **Sequence Number Preservation**  
+   Starcoin already enforces sequence numbers per account to maintain transaction 
+   order. In the DAG context, this mechanism is reused to preserve intra-account 
+   consistency during parallel execution, without introducing additional global 
+   coordination.
+
+2. **Topological Execution via FlexiDAG**  
+   Transactions across blocks are executed in topological order derived from 
+   FlexiDAG (a GHOSTDAG variant adapted for account-based VM models), ensuring 
+   correct inter-block and inter-account dependency resolution.
+
+3. **Pre-execution Conflict Filtering**  
+   Before execution, transactions from blue blocks and the txpool are checked for 
+   conflicts, such as mismatched sequence numbers or overlapping resource access. 
+   Invalid transactions are skipped and retained in the pool.
+
+4. **State Root Finalization and Block Assembly**  
+   Execution begins from the selected parent’s state root. The new block commits 
+   the resulting state root and includes both executed blue block transactions and 
+   non-conflicting transactions from the txpool.
+   
+** Block Structure Changes
+The block structure is modified as follows to support **DAG-based** execution:
+
+1. **Blue Blocks in Block Header**  
+   The set of selected transactions (blue blocks) is included in the block header 
+   to record the executed transactions and their dependencies.
+
+2. **Transactions in Block Body**
+   The block body contains both transactions from the transaction pool and the 
+   blue blocks. Only non-conflicting transactions are included.
+
+** Future Work
+Future optimizations will focus on removing the sequence number control, enabling 
+full parallelism in transaction execution. The transition to a **resource-based** 
+execution model will allow for fine-grained state management, improving scalability 
+and efficiency by fully decoupling transaction dependencies and enabling complete concurrency.
+
+   
+** Conclusion
+This design achieves consistent parallel execution in an account-based DAG chain 
+with minimal changes to the existing system. The core idea lies in shifting the 
+semantic interpretation of a block's transactions from linear execution to a 
+DAG-resolved, dependency-aware context, without altering the underlying VM or transaction format.
